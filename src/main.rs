@@ -11,6 +11,7 @@ async fn foo(conn: impl Acquire<'_, Database = Postgres>) {
         .unwrap();
 }
 
+#[axum::debug_handler]
 async fn handler_with_error(State(pool): State<PgPool>) {
     let mut tx = pool.begin().await.unwrap();
     foo(&mut *tx).await;
@@ -26,10 +27,12 @@ async fn bar(conn: impl Acquire<'_, Database = Postgres>) {
         .unwrap();
     tx.commit().await.unwrap();
 }
+#[axum::debug_handler]
 async fn handler_without_error(State(pool): State<PgPool>) {
     foo(&pool).await;
 }
 
+#[axum::debug_handler]
 async fn handler_without_error_but_incorrect(State(pool): State<PgPool>) {
     foo(&pool).await;
 }
